@@ -1,0 +1,95 @@
+* {
+all: unset;
+}
+
+.bar {
+  padding: 1em;
+  background-color: #1a1a1a;
+  color: #b0b4bc;
+}
+
+.windows {
+  padding: 1em;
+}
+
+.window_button,
+.window_button_active {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+  border: 0.1em solid #fff;
+  border-radius: 0.5em;
+  min-width: 1.5em;
+  color: #000;
+}
+
+.window_button {
+  background-color: #ffb000;
+}
+
+.window_button_active {
+  background-color: #888;
+}
+
+.window_button:hover,
+.window_button_active:hover {
+  background-color: #eee;
+}
+
+.window_button:active,
+.window_button_active:active {
+  border: 0.1em solid #000;
+}
+
+.menu_button {
+  margin-left: 0.75em;
+  margin-right: 0.75em;
+  min-width: 1.5em;
+  border-bottom: 0.1em solid #1a1a1a;
+  padding-bottom: 0.3em;
+}
+
+.menu_button:hover {
+  border-bottom: 0.1em solid #fff;
+}
+
+.menu_button:active {
+  box-shadow: 0 4px 8px #555;
+}
+
+.battery {
+  padding: 0.2em;
+}
+
+.label {
+  color: #fff;
+  padding: 0.3em 0.3em 0.3em 0;
+  font-size: 0.8em;
+}
+
+.power_menu_button {
+  margin: 0.2em 0;
+  padding: 0.5em;
+  background-color: #1a1a1a;
+  color: #eee;
+}
+
+.power_menu_button:hover {
+  border: 0.1em solid #1a1a1a;
+  border-radius: 0.5em;
+  background-color: #eee;
+  color: #1a1a1a;
+}
+
+.power_menu_button:active {
+  border: 0.3em solid #1a1a1a;
+  border-radius: 1em;
+  padding: 0;
+}
+
+.power_menu_class {
+  border: 0.2em solid #1a1a1a;
+  border-radius: 0.5em;
+  padding: 0.3em;
+  background-color: #1a1a1a;
+  min-height: 6em;
+}

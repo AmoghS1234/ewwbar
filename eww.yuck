@@ -1,0 +1,216 @@
+(defwindow bar
+  :monitor 0
+  :stacking "fg"
+  :windowtype "normal"
+  :exclusive true
+  :wm-ignore true
+  :geometry (geometry
+              :width "90%"
+              :height "2%"
+              :anchor "top center"
+              :y "0.5%")
+  (box :orientation "horizontal"
+       :halign "fill"
+       (windows)
+       (datetime)
+       (menu :status {EWW_BATTERY.BAT0.status}
+             :capacity {EWW_BATTERY.BAT0.capacity}
+             :power_profile {power_profile})))
+
+
+(defpoll time :interval "1s"
+  "date '+%d %b | %H:%M:%S'")
+
+
+(defvar show_power_menu false)
+
+
+(defpoll power_profile :interval "1s"
+  "powerprofilesctl get")
+
+
+(defpoll bluetooth :interval "1s"
+  "if bluetoothctl show | grep -q 'Powered: yes'; then
+      if bluetoothctl info | grep -q 'Connected: yes'; then
+          device=$(bluetoothctl info | grep 'Name:' | cut -d ' ' -f2-)
+          echo '{\"status\":\"Connected\",\"device\":\"'$device'\"}'
+      else
+          echo '{\"status\":\"On\",\"device\":\"\"}'
+      fi
+   else
+      echo '{\"status\":\"Off\",\"device\":\"\"}'
+   fi")
+
+
+(defpoll wifi :interval "1s"
+  "if nmcli -t -f WIFI g | grep -q enabled; then
+      if nmcli -t -f ACTIVE,SSID,SIGNAL dev wifi | grep -q '^yes'; then
+          line=$(nmcli -t -f ACTIVE,SSID,SIGNAL dev wifi | grep '^yes')
+          ssid=$(echo $line | cut -d: -f2)
+          signal=$(echo $line | cut -d: -f3)
+
+          # Categorize into 4 levels
+          if [ $signal -ge 75 ]; then
+              strength=4
+          elif [ $signal -ge 50 ]; then
+              strength=3
+          elif [ $signal -ge 25 ]; then
+              strength=2
+          else
+              strength=1
+          fi
+
+          echo '{\"status\":\"Connected\",\"device\":\"'$ssid'\",\"strength\":'$strength'}'
+      else
+          echo '{\"status\":\"On\",\"device\":\"\",\"strength\":0}'
+      fi
+   else
+      echo '{\"status\":\"Off\",\"device\":\"\",\"strength\":0}'
+   fi")
+
+
+(defpoll ws :interval "1s"
+  "wmctrl -d | grep '*' | awk '{print $1}'")
+
+
+(defpoll uptime :interval "10s"
+  "awk '{days=int($1/86400); hours=int(($1%86400)/3600); mins=int(($1%3600)/60); printf \"%dd %02dh %02dm\", days, hours, mins}' /proc/uptime")
+
+
+(defwidget windows []
+  (box :orientation "horizontal"
+       :halign "start"
+       :valign "center"
+       :space-evenly false
+       (button :class {ws=="0"?"window_button_active":"window_button"}
+               :onclick "wmctrl -s 0; ~/eww/target/release/eww update ws=0"
+               (label :text "1"))
+       (button :class {ws=="1"?"window_button_active":"window_button"}
+               :onclick "wmctrl -s 1; ~/eww/target/release/eww update ws=1"
+               (label :text "2"))
+       (button :class {ws=="2"?"window_button_active":"window_button"}
+               :onclick "wmctrl -s 2; ~/eww/target/release/eww update ws=2"
+               (label :text "3"))
+       (button :class {ws=="3"?"window_button_active":"window_button"}
+               :onclick "wmctrl -s 3; ~/eww/target/release/eww update ws=3"
+               (label :text "4"))))
+
+
+(defwidget menu [status capacity power_profile]
+  (box :orientation "horizontal"
+       :halign "end"
+       :valign "center"
+       :space-evenly false
+
+       (button :class "menu_button"
+               :tooltip {uptime}
+               :onclick {show_power_menu
+                          ? "~/eww/target/release/eww update show_power_menu=false"
+                          : "~/eww/target/release/eww update show_power_menu=true"}
+               (image :path "/home/amogh/.config/eww/icons/Power_Button_Logo.png"
+                      :image-height "25"
+                      :image-width "25"))
+
+       (button :tooltip power_profile
+               :class "menu_button"
+               :onclick {power_profile == "power-saver"
+                          ? "powerprofilesctl set balanced"
+                          : power_profile == "balanced"
+                            ? "powerprofilesctl set performance"
+                            : "powerprofilesctl set power-saver"}
+               (overlay :valign "center"
+                        :halign "center"
+                        (image :class "battery"
+                               :path {capacity<=5
+                                       ? "/home/amogh/.config/eww/icons/Red_Battery.png"
+                                       : capacity<=20
+                                         ? "/home/amogh/.config/eww/icons/Red_Battery 1.png"
+                                         : capacity<=40
+                                           ? "/home/amogh/.config/eww/icons/White_Battery.png"
+                                           : capacity<=60
+                                             ? "/home/amogh/.config/eww/icons/White_Battery 1.png"
+                                             : capacity<=80
+                                               ? "/home/amogh/.config/eww/icons/White_Battery 2.png"
+                                               : "/home/amogh/.config/eww/icons/White_Battery 3.png"}
+                               :image-height "40"
+                               :image-width "40")
+                        (label :class "label"
+                               :text {status=="Charging"
+                                       ? capacity + " " + "🗲"
+                                       : capacity})))
+
+       (button :tooltip {wifi.status=="Off"
+                          ? "Wi-Fi Off"
+                          : wifi.status=="On"
+                            ? "Not Connected"
+                            : wifi.device}
+               :class "menu_button"
+               :onrightclick "kcmshell6 kcm_networkmanagement &"
+               :onclick {wifi.status=="Off"
+                          ? "nmcli radio wifi on"
+                          : wifi.status=="On"
+                            ? "nmcli radio wifi off"
+                            : "nmcli radio wifi off"}
+               (image :class "wifi_image"
+                      :path {wifi.status=="Off"
+                              ? "/home/amogh/.config/eww/icons/Wifi_Off.png"
+                              : wifi.status=="On"
+                                ? "/home/amogh/.config/eww/icons/Wifi_Not_Connected.png"
+                                : wifi.strength==4
+                                  ? "/home/amogh/.config/eww/icons/Wifi_4.png"
+                                  : wifi.strength==3
+                                    ? "/home/amogh/.config/eww/icons/Wifi_3.png"
+                                    : wifi.strength==2
+                                      ? "/home/amogh/.config/eww/icons/Wifi_2.png"
+                                      : "/home/amogh/.config/eww/icons/Wifi_1.png"}
+                      :image-height "18"
+                      :image-width "22"
+                      :preserve-aspect-ratio false))
+
+       (button :tooltip {bluetooth.status=="Off"
+                          ? "Off"
+                          : bluetooth.status=="On"
+                            ? "Not Connected"
+                            : bluetooth.device}
+               :class "menu_button"
+               :onrightclick "kcmshell6 kcm_bluetooth &"
+               :onclick {bluetooth.status == "On"
+                          ? "bluetoothctl power off"
+                          : bluetooth.status == "Connected"
+                            ? "bluetoothctl power off"
+                            : "bluetoothctl power on"}
+               (image :class "bluetooth_image"
+                      :path {bluetooth.status == "Off"
+                              ? "/home/amogh/.config/eww/icons/Bluetooth_Off.png"
+                              : bluetooth.status == "On"
+                                ? "/home/amogh/.config/eww/icons/Bluetooth_Idle.png"
+                                : "/home/amogh/.config/eww/icons/Bluetooth_Connected.png"}
+                      :image-height "20"
+                      :image-width "13"
+                      :preserve-aspect-ratio false))))
+
+
+(defwidget datetime []
+  time)
+
+
+(defwindow powermenu
+  :monitor 0
+  :stacking "fg"
+  :windowtype "normal"
+  :wm-ignore true
+  :geometry (geometry
+              :width "5%"
+              :y "0.1%"
+              :x "82.2%")
+  (box :orientation "vertical"
+       :class "power_menu_class"
+       :halign "fill"
+       :valign "start"
+       :visible show_power_menu
+       (button :class "power_menu_button"
+               :onclick "shutdown now"
+               (label :text "Shutdown"))
+       (button :class "power_menu_button"
+               :onclick "reboot"
+               (label :text "Restart"))))
