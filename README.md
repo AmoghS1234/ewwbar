@@ -1,6 +1,6 @@
 # EwwBar
 
-A minimal bar built using **Eww** for Linux (Tested on wayland only). Displays workspaces, time, battery, power profile, Wi-Fi, Bluetooth, and a power menu.
+A minimal bar built using **Eww** for Linux (Tested on plasma kde wayland on linux arch only). Displays workspaces, time, battery, power profile, Wi-Fi, Bluetooth, and a power menu.
 
 ## Features
 
