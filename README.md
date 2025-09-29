@@ -10,3 +10,7 @@ Displays workspaces, power, battery, Wi-Fi, and Bluetooth status, with dropdown 
 - Battery status with icons
 - Wi-Fi and Bluetooth status indicators
 - Clock and date display
+
+## Screenshots
+![Eww Bar](screenshots/main_bar.png)
+![Power Menu](screenshots/power_menu.png)
