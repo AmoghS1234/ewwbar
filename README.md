@@ -1,15 +1,17 @@
-# eww-bar
+# EwwBar
 
-A top bar for Wayland using Eww.  
-Displays workspaces, power, battery, Wi-Fi, and Bluetooth status, with dropdown menu for power options.
+A minimal bar built using **Eww** for Linux (Tested on wayland only). Displays workspaces, time, battery, power profile, Wi-Fi, Bluetooth, and a power menu.
 
 ## Features
 
-- Workspace buttons
-- Power button with dropdown (Shutdown, Restart)
-- Battery status with icons
-- Wi-Fi and Bluetooth status indicators
-- Clock and date display
+- **Workspace Switcher**: Quickly switch between workspaces. Highlights the active workspace.
+- **Datetime**: Displays current date and time in `DD Mon | HH:MM:SS` format.
+- **Battery**: Shows battery status with dynamic icons and a tooltip indicating the power profile.
+- **Power Profile**: Toggle between `power-saver`, `balanced`, and `performance` modes directly from the bar.
+- **Wi-Fi**: Displays Wi-Fi status, connected network, and signal strength (4 levels). Right-click to open network settings. Click to toggle Wi-Fi.
+- **Bluetooth**: Shows status, connected device, and provides a right-click shortcut to Bluetooth settings. Click to toggle Bluetooth.
+- **Power Menu**: Expandable menu with `Shutdown` and `Restart` options.
+- **Uptime Tooltip**: Hovering on the power button shows uptime in days, hours, and minutes.
 
 ## Screenshots
 
