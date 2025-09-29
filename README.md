@@ -4,7 +4,7 @@ A minimal bar built using **Eww** for Linux (Tested on wayland only). Displays w
 
 ## Features
 
-- **Workspace Switcher**: Quickly switch between workspaces. Highlights the active workspace.
+- **Workspace Switcher**: Quickly switch between workspaces. Highlights the active workspace (Currently coded to show 4 workspaces. Dynamic menu can be added to show as many as available).
 - **Datetime**: Displays current date and time in `DD Mon | HH:MM:SS` format.
 - **Battery**: Shows battery status with dynamic icons and a tooltip indicating the power profile.
 - **Power Profile**: Toggle between `power-saver`, `balanced`, and `performance` modes directly from the bar.
