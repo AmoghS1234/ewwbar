@@ -202,7 +202,7 @@
   :geometry (geometry
               :width "5%"
               :y "0.1%"
-              :x "82.2%")
+              :x "82.5%")
   (box :orientation "vertical"
        :class "power_menu_class"
        :halign "fill"
